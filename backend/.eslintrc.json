@@ -23,15 +23,15 @@
     "prettier"
   ],
   "rules": {
+    "prettier/prettier": "error",
+    "class-methods-use-this":"off",
     "import/extensions": [
       "error",
       "ignorePackages",
       {
         "ts": "never"
       }
-    ],
-    "prettier/prettier": "error",
-    "class-methods-user-this":"off"
+    ]
   },
   "settings": {
     "import/resolver": {
