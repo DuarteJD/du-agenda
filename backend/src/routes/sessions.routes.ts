@@ -9,10 +9,10 @@ routes.post('/', async (request, response) => {
 
     const authUser = new AuthenticateUserService();
 
-    const { user } = await authUser.execute({ email, password });
+    const { user, token } = await authUser.execute({ email, password });
 
     delete user.password;
-    return response.json(user);
+    return response.json({ user, token });
   } catch (error) {
     return response.status(404).json({ error: error.message });
   }

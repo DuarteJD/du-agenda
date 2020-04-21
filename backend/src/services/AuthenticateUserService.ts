@@ -1,5 +1,8 @@
 import { getRepository } from 'typeorm';
 import { compare } from 'bcryptjs';
+import { sign } from 'jsonwebtoken';
+
+import AuthConfig from '../config/auth';
 
 import User from '../models/Users';
 
@@ -8,7 +11,10 @@ interface Request {
   password: string;
 }
 class AuthenticateUserService {
-  public async execute({ email, password }: Request): Promise<{ user: User }> {
+  public async execute({
+    email,
+    password,
+  }: Request): Promise<{ user: User; token: string }> {
     const usersRepository = getRepository(User);
     const user = await usersRepository.findOne({
       where: { email },
@@ -24,7 +30,14 @@ class AuthenticateUserService {
       throw new Error('Combination of e-mail/password not found!');
     }
 
-    return { user };
+    const { secret, expiresIn } = AuthConfig.jwt;
+
+    const token = sign({}, secret, {
+      subject: user.id,
+      expiresIn,
+    });
+
+    return { user, token };
   }
 }
 
