@@ -7,8 +7,8 @@ import authentication from '../middlewares/authentication';
 const routes = Router();
 
 routes.use('/sessions', sessionsRouter);
+routes.use('/users', userRouter);
 routes.use(authentication);
 routes.use('/appointments', appointmentRouter);
-routes.use('/users', userRouter);
 
 export default routes;
