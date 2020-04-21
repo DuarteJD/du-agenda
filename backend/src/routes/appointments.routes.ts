@@ -14,26 +14,21 @@ routes.get('/', async (request, response) => {
 });
 
 routes.post('/', async (request, response) => {
-  try {
-    const { date, provider_id } = request.body;
+  const { date, provider_id } = request.body;
 
-    // Tratamento das informações
-    const parseDate = parseISO(date);
+  // Tratamento das informações
+  const parseDate = parseISO(date);
 
-    // Chamando o arquivo que irá persistir meus dados
-    const appointmentServiceCreate = new CreateAppointmentService();
+  // Chamando o arquivo que irá persistir meus dados
+  const appointmentServiceCreate = new CreateAppointmentService();
 
-    const appointment = await appointmentServiceCreate.execute({
-      date: parseDate,
-      provider_id,
-    });
+  const appointment = await appointmentServiceCreate.execute({
+    date: parseDate,
+    provider_id,
+  });
 
-    // Retornando o resultado para o usuário
-    return response.json(appointment);
-  } catch (error) {
-    // Tratamento de erros
-    return response.status(error.statusCode).json({ error: error.message });
-  }
+  // Retornando o resultado para o usuário
+  return response.json(appointment);
 });
 
 export default routes;
