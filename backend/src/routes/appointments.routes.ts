@@ -15,7 +15,7 @@ routes.get('/', async (request, response) => {
 
 routes.post('/', async (request, response) => {
   try {
-    const { date, provider } = request.body;
+    const { date, provider_id } = request.body;
 
     // Tratamento das informações
     const parseDate = parseISO(date);
@@ -25,7 +25,7 @@ routes.post('/', async (request, response) => {
 
     const appointment = await appointmentServiceCreate.execute({
       date: parseDate,
-      provider,
+      provider_id,
     });
 
     // Retornando o resultado para o usuário
