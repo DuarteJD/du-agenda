@@ -32,7 +32,7 @@ routes.post('/', async (request, response) => {
     return response.json(appointment);
   } catch (error) {
     // Tratamento de erros
-    return response.status(400).json({ error: error.message });
+    return response.status(error.statusCode).json({ error: error.message });
   }
 });
 

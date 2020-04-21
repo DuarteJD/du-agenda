@@ -3,6 +3,7 @@ import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 
 import AuthConfig from '../config/auth';
+import AppError from '../errors/AppErrors';
 
 import User from '../models/Users';
 
@@ -21,13 +22,13 @@ class AuthenticateUserService {
     });
 
     if (!user) {
-      throw new Error('Combination of e-mail/password not found!');
+      throw new AppError('Combination of e-mail/password not found!', 401);
     }
 
     const passwordMatched = await compare(password, user.password);
 
     if (!passwordMatched) {
-      throw new Error('Combination of e-mail/password not found!');
+      throw new AppError('Combination of e-mail/password not found!', 401);
     }
 
     const { secret, expiresIn } = AuthConfig.jwt;

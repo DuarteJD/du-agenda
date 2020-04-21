@@ -2,6 +2,7 @@ import { startOfHour } from 'date-fns';
 import { getCustomRepository } from 'typeorm';
 import Appointment from '../models/Appointments';
 import AppointmentRepository from '../repositories/AppointmentsRepository';
+import AppError from '../errors/AppErrors';
 
 interface Request {
   date: Date;
@@ -18,7 +19,7 @@ class CreateAppointmentService {
     );
 
     if (findAppointmentInSameDate) {
-      throw Error('Appointment already booked!');
+      throw new AppError('Appointment already booked!');
     }
 
     // Persistência dos dados
