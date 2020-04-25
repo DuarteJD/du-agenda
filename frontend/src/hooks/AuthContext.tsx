@@ -9,6 +9,7 @@ interface SignInCredentials {
 interface AuthContextData {
   user: object;
   signIn(credentials: SignInCredentials): Promise<void>;
+  signOut(): void;
 }
 
 interface AuthState {
@@ -29,6 +30,13 @@ export const AuthProvider: React.FC = ({ children }) => {
     return {} as AuthState;
   });
 
+  const signOut = useCallback(() => {
+    localStorage.removeItem('@du-agenda:token');
+    localStorage.removeItem('@du-agenda:user');
+
+    setData({} as AuthState);
+  }, []);
+
   const signIn = useCallback(async ({ email, password }) => {
     const response = await api.post('sessions', {
       email,
@@ -43,7 +51,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user: data.user, signIn }}>
+    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

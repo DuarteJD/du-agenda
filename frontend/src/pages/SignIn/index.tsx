@@ -5,7 +5,7 @@ import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 import { Container, Content, Background } from './styles';
 
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/AuthContext';
 import getValidationErrors from '../../utils/getValidationErrors';
 
 import Input from '../../components/Input';
@@ -40,8 +40,10 @@ const SignIn: React.FC = () => {
 
         signIn({ email: data.email, password: data.password });
       } catch (error) {
-        const errors = getValidationErrors(error);
-        formRef.current?.setErrors(errors);
+        if (error instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(error);
+          formRef.current?.setErrors(errors);
+        }
       }
     },
     [signIn],
