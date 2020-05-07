@@ -23,7 +23,10 @@
     "prettier"
   ],
   "rules": {
+    "no-underscored-dangle": "off",
+    "no-useless-constructor": "off",
     "prettier/prettier": "error",
+    "@typescript-eslint/interface-name-prefix": ["error" , { "prefixWithI": "always"}],
     "@typescript-eslint/camelcase": "off",
     "@typescript-eslint/no-unused-vars": ["error", {
       "argsIgnorePattern": "_"
