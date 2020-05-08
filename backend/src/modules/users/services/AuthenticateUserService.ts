@@ -1,4 +1,3 @@
-import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 
 import AuthConfig from '@config/auth';
@@ -7,6 +6,7 @@ import { injectable, inject } from 'tsyringe';
 
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import User from '@modules/users/infra/typeorm/entities/Users';
+import IHashProvider from '../providers/hashProvider/models/IHashProvider';
 
 interface IRequest {
   email: string;
@@ -18,6 +18,9 @@ class AuthenticateUserService {
   constructor(
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('HashProvider')
+    private hashProvider: IHashProvider,
   ) {}
 
   public async execute({
@@ -30,7 +33,10 @@ class AuthenticateUserService {
       throw new AppError('Combination of e-mail/password not found!', 401);
     }
 
-    const passwordMatched = await compare(password, user.password);
+    const passwordMatched = await this.hashProvider.compareHash(
+      password,
+      user.password,
+    );
 
     if (!passwordMatched) {
       throw new AppError('Combination of e-mail/password not found!', 401);
