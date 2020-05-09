@@ -1,4 +1,5 @@
 import { injectable, inject } from 'tsyringe';
+import path from 'path';
 
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository';
@@ -30,9 +31,29 @@ class SendForgotPasswordEmailService {
       throw new AppError('User does not exists!');
     }
 
-    await this.UserTokensRepository.generate(user.id);
+    const { token } = await this.UserTokensRepository.generate(user.id);
 
-    this.mailProvider.sendMail(email, 'Recuperação de senha!');
+    const forgotTemplate = path.resolve(
+      __dirname,
+      '..',
+      'views',
+      'forgot_password.hbs',
+    );
+
+    await this.mailProvider.sendMail({
+      to: {
+        name: user.name,
+        email: user.email,
+      },
+      subject: `[DuAgenda] Recuperação de senha!`,
+      templateData: {
+        file: forgotTemplate,
+        depara: {
+          name: user.name,
+          link: `http://localhost:3000/reset_password?token=${token}`,
+        },
+      },
+    });
   }
 }
 export default SendForgotPasswordEmailService;

@@ -5,9 +5,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Generated,
+  // ManyToOne,
+  // JoinColumn,
 } from 'typeorm';
 
-@Entity('user_tokens')
+// import User from '@modules/users/infra/typeorm/entities/Users';
+
+@Entity('users_tokens')
 class UserToken {
   @PrimaryGeneratedColumn('uuid')
   id: string;
