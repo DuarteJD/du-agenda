@@ -4,16 +4,22 @@ import FakeStorageProvider from '@shared/container/providers/storageProvider/fak
 import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
 import UpdateUserAvatarService from './UpdateUserAvatarService';
 
-describe('CreateUser', () => {
-  it('should be able to update user avatar', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeStorageProvider = new FakeStorageProvider();
+let fakeUsersRepository: FakeUsersRepository;
+let fakeStorageProvider: FakeStorageProvider;
 
-    const updateUser = new UpdateUserAvatarService(
+let updateUser: UpdateUserAvatarService;
+
+describe('CreateUser', () => {
+  beforeEach(() => {
+    fakeUsersRepository = new FakeUsersRepository();
+    fakeStorageProvider = new FakeStorageProvider();
+
+    updateUser = new UpdateUserAvatarService(
       fakeUsersRepository,
       fakeStorageProvider,
     );
-
+  });
+  it('should be able to update user avatar', async () => {
     const user = await fakeUsersRepository.create({
       name: 'John Doe',
       email: 'jhondoe@gmail.com',
@@ -29,15 +35,7 @@ describe('CreateUser', () => {
   });
 
   it('should not be able to update avatar of a inexistent user', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeStorageProvider = new FakeStorageProvider();
-
-    const updateUser = new UpdateUserAvatarService(
-      fakeUsersRepository,
-      fakeStorageProvider,
-    );
-
-    expect(
+    await expect(
       updateUser.execute({
         user_id: 'no-existing-user',
         avatarFilename: 'foto.png',
@@ -46,15 +44,7 @@ describe('CreateUser', () => {
   });
 
   it('should delete a user avatar on update a new', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const fakeStorageProvider = new FakeStorageProvider();
-
-    const deleterFile = jest.spyOn(fakeStorageProvider, 'deleteFile');
-
-    const updateUser = new UpdateUserAvatarService(
-      fakeUsersRepository,
-      fakeStorageProvider,
-    );
+    const deleteFile = jest.spyOn(fakeStorageProvider, 'deleteFile');
 
     const user = await fakeUsersRepository.create({
       name: 'John Doe',
@@ -72,7 +62,7 @@ describe('CreateUser', () => {
       avatarFilename: 'fotonova.png',
     });
 
-    expect(deleterFile).toHaveBeenCalledWith('foto.png');
+    expect(deleteFile).toHaveBeenCalledWith('foto.png');
     expect(user.avatar).toBe('fotonova.png');
   });
 });
