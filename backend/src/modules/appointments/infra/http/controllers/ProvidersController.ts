@@ -8,9 +8,7 @@ export default class ProvidersController {
     const user_id = request.user.id;
 
     // Chamando o arquivo que irá persistir meus dados
-    const listProviders = new ListProvidersService(
-      container.resolve('UsersRepository'),
-    );
+    const listProviders = container.resolve(ListProvidersService);
 
     const providers = await listProviders.execute({
       user_id,

@@ -6,6 +6,7 @@ import CreateAppointmentService from '@modules/appointments/services/CreateAppoi
 
 export default class AppointmentsController {
   public async create(request: Request, response: Response): Promise<Response> {
+    const user_id = request.user.id;
     const { date, provider_id } = request.body;
 
     // Tratamento das informações
@@ -19,6 +20,7 @@ export default class AppointmentsController {
     const appointment = await appointmentServiceCreate.execute({
       date: parseDate,
       provider_id,
+      user_id,
     });
 
     // Retornando o resultado para o usuário
