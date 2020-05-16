@@ -13,11 +13,9 @@ export default class AppointmentsController {
     const parseDate = parseISO(date);
 
     // Chamando o arquivo que irá persistir meus dados
-    const appointmentServiceCreate = new CreateAppointmentService(
-      container.resolve('AppointmentsRepository'),
-    );
+    const createAppointment = container.resolve(CreateAppointmentService);
 
-    const appointment = await appointmentServiceCreate.execute({
+    const appointment = await createAppointment.execute({
       date: parseDate,
       provider_id,
       user_id,
