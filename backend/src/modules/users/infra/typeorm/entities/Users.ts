@@ -6,6 +6,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+import storageConfig from '@config/storage';
+
 import { Exclude, Expose } from 'class-transformer';
 
 @Entity('users')
@@ -34,9 +36,18 @@ class Users {
 
   @Expose({ name: 'avatar_url' })
   getAvatarUrl(): string | null {
-    return this.avatar
-      ? `${process.env.APP_API_URL}/files/${this.avatar}`
-      : null;
+    if (!this.avatar) {
+      return null;
+    }
+
+    switch (storageConfig.storage) {
+      case 'disk':
+        return `${process.env.APP_API_URL}/files/${this.avatar}`;
+      case 's3':
+        return `https://${storageConfig.aws.bucket}.s3.amazonaws.com/${this.avatar}`;
+      default:
+        return null;
+    }
   }
 }
 
