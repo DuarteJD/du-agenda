@@ -3,6 +3,7 @@ import api from '../services/api';
 
 interface User {
   name: string;
+  email: string;
   avatar_url: string;
   id: string;
 }
@@ -16,6 +17,7 @@ interface AuthContextData {
   user: User;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
+  updateInfo(user: User): void;
 }
 
 interface AuthState {
@@ -60,8 +62,21 @@ export const AuthProvider: React.FC = ({ children }) => {
     setData({ token, user });
   }, []);
 
+  const updateInfo = useCallback(
+    (user: User) => {
+      localStorage.setItem('@du-agenda:user', JSON.stringify(user));
+      setData({
+        token: data.token,
+        user,
+      });
+    },
+    [setData, data.token],
+  );
+
   return (
-    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ user: data.user, signIn, signOut, updateInfo }}
+    >
       {children}
     </AuthContext.Provider>
   );
